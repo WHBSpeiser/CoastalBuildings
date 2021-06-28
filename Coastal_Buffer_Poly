@@ -1,0 +1,108 @@
+import ogr, os
+import osmnx as ox
+from IPython.display import Image
+import time
+from shapely.geometry import mapping, shape
+from shapely.geometry import box as shBox
+import fiona
+import numpy as np
+import rasterio
+import pandas as pd
+import geopandas as gpd
+import geopandas
+import gdal
+import ogr
+from sys import getsizeof
+import os
+import subprocess
+from shapely.geometry import Polygon
+from shapely.geometry import Polygon
+from shapely.geometry import mapping, LineString, MultiLineString
+from fiona import collection
+import shapefile
+
+
+
+roi="NorthCarolina"
+
+
+#Import Line file of US Coast. Can get such a file here: https://geodata.lib.berkeley.edu/catalog/
+US_cst= gpd.read_file('.../UnitedStatesLine/usa_coastl.shp')
+
+
+#Establish Lat Lon extent to clip coastal polyline. This Example uses north Carolina Outer Banks
+lat1= 36.55168874814877   #northern-most point
+lat2= 33.84779735349369    #southern-most point
+lon1=  -75.44137358308775    #eastern-most point
+lon2= -78.54101753584933      #western-most point
+
+#Establish output of ROI coast
+coast_fn='.../Coasts/'+roi+'_coast_polygon.shp'
+#Establish output of 10km coastal buffer
+roi_buffer='.../Buffers/'+roi+'_buffer_polygon.shp'
+
+
+
+#create polygon of bounds
+shape = ([[[lon2,lat2], [lon2,lat1], [lon1,lat1], [lon1,lat2] ]])
+w = shapefile.Writer('.../Bounds/'+roi+'bounds_polygon.shp')
+w.field('name', 'C')
+w.poly(shape)
+w.record('polygon')
+w.close()
+bnd=gpd.read_file('.../Bounds/'+roi+'bounds_polygon.shp')
+bnd=bnd.set_crs('EPSG:4326')
+
+#clip coastal polyline with bounds poly
+roi_coast=geopandas.clip(US_cst,bnd)
+roi_coast.to_file(coast_fn)
+
+
+#Create buffer of clipped coast
+
+
+
+def createBuffer(inputfn, outputBufferfn, bufferDist):
+    inputds = ogr.Open(inputfn)
+    inputlyr = inputds.GetLayer()
+
+    shpdriver = ogr.GetDriverByName('ESRI Shapefile')
+    if os.path.exists(outputBufferfn):
+        shpdriver.DeleteDataSource(outputBufferfn)
+    outputBufferds = shpdriver.CreateDataSource(outputBufferfn)
+    bufferlyr = outputBufferds.CreateLayer(outputBufferfn, geom_type=ogr.wkbPolygon)
+    featureDefn = bufferlyr.GetLayerDefn()
+
+    for feature in inputlyr:
+        ingeom = feature.GetGeometryRef()
+        geomBuffer = ingeom.Buffer(bufferDist)
+
+        outFeature = ogr.Feature(featureDefn)
+        outFeature.SetGeometry(geomBuffer)
+        bufferlyr.CreateFeature(outFeature)
+
+    def main(inputfn, outputBufferfn, bufferDist):
+        createBuffer(inputfn, outputBufferfn, bufferDist)
+
+
+    if __name__ == "__main__":
+        inputfn = coast_fn
+        outputBufferfn = roi_buffer
+        bufferDist = 0.01
+
+        main(inputfn, outputBufferfn, bufferDist)
+
+ # creating the projection file. Not included in the cookbook
+   # prj = open('oblibuffer001.prj', 'w')
+   # proyeccion = 'GEOGCS["GCS_WGS_1984",
+   # DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],' \
+   #          'PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]'
+   # prj.write(proyeccion)
+   # prj.close()
+    
+
+createBuffer(coast_fn, roi_buffer,.01)
+
+
+
+
