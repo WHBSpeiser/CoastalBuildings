@@ -25,8 +25,8 @@ import subprocess
 inputRaster=r'.../reference_image_L8.tif'
 outputFolder=r'.../MSBuildingFootPrints/'
 #outputFolder=r'/home/will/Desktop/Projects/USGS/Data/CreatedData/Rasters/OSMBuildingFootPrints/'
-inputBuildingsShape2=r'.../NC14_16_MS_Bldgs.shp' #MS buildings clipped to NC14 & 16 shapefiles
-#inputBuildingsShape2= r "/home/will/Desktop/Projects/USGS/Data/RawData/Polygons/OSM/HatterasIsland_bldgs.shp"
+inputBuildingsShape2=r'.../ROI_Bldgs.shp' #MS buildings clipped to NC14 & 16 shapefiles
+#inputBuildingsShape2= r ".../OSM/HatterasIsland_bldgs.shp"
 
 
 
