@@ -1,0 +1,36 @@
+import osmnx as ox
+from IPython.display import Image
+import time
+from shapely.geometry import mapping, shape
+from shapely.geometry import box as shBox
+import fiona
+import numpy as np
+import rasterio
+import pandas as pd
+import geopandas as gpd
+import geopandas
+import gdal
+import ogr
+from sys import getsizeof
+import os
+import subprocess
+
+
+
+#Input ROI polygon of the area for building footprint extraction
+#Use this if yopu need to combine two shapefiles into one polygon
+gdf1 = gpd.read_file('.../shape1.shp')
+gdf2 = gpd.read_file('.../shape2.shp')
+gdf = gpd.GeoDataFrame(pd.concat([gdf1, gdf2]))
+gdf.to_file('.../ROI_shape.shp')
+
+
+
+#Read ROI shapefile then use it to clip MS or OSM building footprint 
+clip=gpd.read_file('.../ROI_shape.shp')
+json=gpd.GeoDataFrame(gpd.read_file('.../NorthCarolina.geojson')) #MS: https://github.com/Microsoft/USBuildingFootprints
+
+
+#Clip Json to polygon shape and save as .shp
+json_clipped = geopandas.clip(json, clip)
+json_clipped.to_file('.../ROI_Bldgs.shp')
