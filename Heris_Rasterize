@@ -1,0 +1,195 @@
+#Adapted from https://github.com/mehdiheris/RasterizingBuildingFootprints
+
+
+
+#Can get reference input raster using this code https://code.earthengine.google.com/c292bd3bfe67690ef7824b425a3f5b9d. Change ROI geometry as needed.
+
+## We use the extent, projection, and cell alignment of this raster to generate the outputs.
+#Can either use raster that you have or make a reference raster with GEE using above code
+inputRaster=r'.../reference_image_L8.tif'
+outputFolder=r'.../MSBuildingFootPrints/'
+#outputFolder=r'/home/will/Desktop/Projects/USGS/Data/CreatedData/Rasters/OSMBuildingFootPrints/'
+inputBuildingsShape2=r'.../NC14_16_MS_Bldgs.shp' #MS buildings clipped to NC14 & 16 shapefiles
+#inputBuildingsShape2= r "/home/will/Desktop/Projects/USGS/Data/RawData/Polygons/OSM/HatterasIsland_bldgs.shp"
+
+
+
+#Resolution of reference raster
+res=30
+
+
+#from itertools import product
+t1=time.time()
+
+# set the input layers and output locations
+
+
+
+#/home/will/Desktop/Projects/USGS/Data/Inputs/OuterBanksRastTest.tif
+
+
+
+
+# set the output rasters (results)
+bldgMaxToWriteRaster     = outputFolder +r'bldgMax.tif'
+bldgMinToWriteRaster     = outputFolder +r'bldgMin.tif'
+bldgAveToWriteRaster     = outputFolder +r'bldgAve.tif'
+bldgSumToWriteRaster     = outputFolder+ r'bldgSum.tif'
+bldgCountToWriteRaster   = outputFolder+ r'bldgCount.tif'
+bldgCentroidCountToWriteRaster= outputFolder+ r'bldgCentroidCount.tif'
+
+
+
+bldgSumDataType='float32'
+bldgMaxDataType='float64'
+bldgMinDataType='float64'
+bldgAvgDataType='float64'
+bldgCntDataType='int32'
+bldgCenteriodCntDataType='int32'
+
+
+
+
+with rasterio.open(inputRaster) as nlcdWindow:
+    kwds = nlcdWindow.meta.copy()
+    thisWindowWidth=nlcdWindow.width
+    thisWindowHeight=nlcdWindow.height
+    cellSize= kwds['transform'][0]
+    topY  = nlcdWindow.bounds[3]
+    leftX = nlcdWindow.bounds[0]
+    windowShape = nlcdWindow.shape
+    topLeftCornerWindow = [nlcdWindow.bounds[0],nlcdWindow.bounds[3]]
+    profile = nlcdWindow.profile
+
+
+
+# start the arrays for each raster output. the rasters have the same shape as the nlcd window
+arBldgSum=np.zeros(windowShape)
+arBldgSumAllBldgArea=np.zeros(windowShape)
+arBldgMax=np.zeros(windowShape)
+arBldgMin=np.zeros(windowShape)
+arBldgCount=np.zeros(windowShape)
+arBldgCentroid=np.zeros(windowShape)
+
+
+
+# read the building shape file as geometries and put them in a list
+buildingsPolys = [shape(bldg['geometry']) for bldg in fiona.open(inputBuildingsShape2)]
+
+print ('read the buildings',(time.time()-t1))
+
+# an error variable to know howw many intersection fail
+er=0
+# grab each building in this loop
+for bldg in buildingsPolys:
+    # get the area of the building
+    bldgArea=bldg.area
+    # get the bound of the building
+    bldgBounds=bldg.bounds
+    
+    # calculate the count of centroid for each cell
+    # to make sure the point is inside the polygon this method can be used instead: bldg.representative_point()
+    centroidX=(bldg.centroid.coords)[0][0]
+    centroidY=(bldg.centroid.coords)[0][1]
+    col   = int((centroidX - leftX)/cellSize)
+    row   = int((topY - centroidY)/cellSize)
+    arBldgCentroid[row,col]+=1
+    
+    # let's find the distance form the top left corner of the raster
+    xDifTL=bldgBounds[0]-topLeftCornerWindow[0]
+    yDifTL=topLeftCornerWindow[1]-bldgBounds[3]
+    # lets find the top left corner of the first grid cell that is supposed to be intersected later
+    colStart=int(xDifTL//res)
+    rowStart=int(yDifTL//res)
+
+    # lets find the end row and collumn of the window cells of this building
+    colEnd=int((bldgBounds[2]-topLeftCornerWindow[0])//res)+1
+    rowEnd=int((topLeftCornerWindow[1]-bldgBounds[1])//res)+1
+
+    # get the shape of the window cell that has intersection with this building
+    nmRowWinCell=rowEnd-rowStart
+    nmColWinCell=colEnd-colStart
+    shapeWinCell=[nmRowWinCell,nmColWinCell]
+
+
+    # let's go through each cell in the window cells which are the cells having intersection with
+    # this specific budiling
+    for row1 in range(0, shapeWinCell[0]):
+        for col1 in range(0,shapeWinCell[1]):
+            # the current cell
+            thisRow=row1+rowStart
+            thisCol=col1+colStart
+            #print (thisRow,thisCol)
+            #shapely.geometry.box(minx, miny, maxx, maxy, ccw=True)
+            # here create a shape polygon geometry of the current cell
+            minXBox=thisCol*res+topLeftCornerWindow[0]
+            maxYBox=topLeftCornerWindow[1]-(thisRow*res)
+            maxXBox=minXBox+res
+            minYBox=maxYBox-res
+            thisCell=shBox(minXBox, minYBox, maxXBox, maxYBox, ccw=True)
+            # run the intersection
+            if bldg.intersects(thisCell) ==True:
+                try:
+                    area = bldg.intersection(thisCell).area
+                    #print(area,bldgArea,(thisRow,thisCol))
+                    # update the arrays with the values being generated through intersection
+                    # count
+                    arBldgCount[thisRow,thisCol]=arBldgCount[thisRow,thisCol]+1
+                    # sum
+                    arBldgSum[thisRow,thisCol]=arBldgSum[thisRow,thisCol]+area
+                    # sums of buildings to build average building area later
+                    arBldgSumAllBldgArea[thisRow,thisCol]=arBldgSumAllBldgArea[thisRow,thisCol]+bldgArea
+                    # Max
+                    if arBldgMax[thisRow,thisCol]<area:
+                        arBldgMax[thisRow,thisCol]=bldgArea
+                    # min
+                    if arBldgMin[thisRow,thisCol]==0 or arBldgMin[thisRow,thisCol]>area:
+                        arBldgMin[thisRow,thisCol]=bldgArea
+                    
+                except:
+                    er+=1
+                    
+# calcualate the average building array using sum of building areas and count
+arAveBldgArea= np.divide(arBldgSumAllBldgArea,arBldgCount,where=arBldgCount!=0)
+print('error is', er)
+print ('built all arrays',(time.time()-t1))
+
+
+
+
+arBldgSum = (arBldgSum).astype(bldgSumDataType)
+arAveBldgArea = (arAveBldgArea).astype(bldgAvgDataType)
+arBldgMax= (arBldgMax).astype(bldgMaxDataType)
+arBldgMin=(arBldgMin).astype(bldgMinDataType)
+arBldgCount=arBldgCount.astype(bldgCntDataType)
+arBldgCentroid=arBldgCentroid.astype(bldgCenteriodCntDataType)
+
+# write arrays to rasters
+
+
+
+profile['dtype']=bldgMaxDataType
+with rasterio.open(bldgMaxToWriteRaster, 'w', **profile) as output:
+    output.write_band(1,arBldgMax)
+    
+profile['dtype']=bldgMinDataType    
+with rasterio.open(bldgMinToWriteRaster, 'w', **profile) as output:
+    output.write_band(1,arBldgMin)
+    
+profile['dtype']=bldgAvgDataType    
+with rasterio.open(bldgAveToWriteRaster, 'w', **profile) as output:
+    output.write_band(1,arAveBldgArea)
+    
+profile['dtype']=bldgSumDataType    
+with rasterio.open(bldgSumToWriteRaster, 'w', **profile) as output:
+    output.write_band(1,arBldgSum)
+    
+profile['dtype']=bldgCntDataType    
+with rasterio.open(bldgCountToWriteRaster, 'w', **profile) as output:
+    output.write_band(1,arBldgCount)
+
+
+profile['dtype']=bldgCenteriodCntDataType    
+with rasterio.open(bldgCentroidCountToWriteRaster, 'w', **profile) as output:
+    output.write_band(1,arBldgCentroid)
+print ('all done',(time.time()-t1))
