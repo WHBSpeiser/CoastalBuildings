@@ -29,7 +29,7 @@ When you run the first cell, a pop-up window will instruct you to choose a direc
 After choosing your directory, your first cell will display multiple options below the code window. The first will be a dropdown where you choose your available State of interest. In the next dropdown, you will choose an datasource for building footprints within the chosen state. Different sources will take different amounts of time to process and download. This is due their source files varying in sizes or because of the data calling method necessary for the chosen source. Different sources are also of varying accuracy or consist of data collected fromn different years. It is encouraged that you read the information on their data sources in the **Sources** section below.
 
 ### Cell 1: Footprint Data Type
- coming soon
+Choose your prefered data type for your non-rasterized building footprints from the "File Type" dropdown menu. 
  
 ### Cell 1: Rasterization
 #### Building Footprint Rasters
