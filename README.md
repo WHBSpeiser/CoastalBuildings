@@ -2,7 +2,7 @@
 
 ## Description:
 
-Coastal Buildings Finder is a Jupyter Notebook to aide in the collection of building footprint data for the Eastern United States Coast (more locations to come). The goals of this Notebook are to keep track of various sources of building footprint data, provide an easy interface for extracting that data within 10km of the coast and specified, drawn bounds, and to download such data in a prefereable file format (i.e. GeoJSON, Shapefile, or TIF). The rasterization process is modified from the Mehdi Heris RasterizeBuildingFootprints toolbox: [https://github.com/mehdiheris/RasterizingBuildingFootprints] 
+CoastalBuildingsFinder is a Jupyter Notebook to aide in the collection of building footprint data for the Eastern United States Coast (more locations to come). The goals of this Notebook are to keep track of various sources of building footprint data, provide an easy interface for extracting that data within 10km of the coast and specified, drawn bounds, and to download such data in a prefereable file format (i.e. GeoJSON, Shapefile, or TIF). The rasterization process is modified from the Mehdi Heris RasterizeBuildingFootprints toolbox: [https://github.com/mehdiheris/RasterizingBuildingFootprints] 
 
 
 ## Installation
