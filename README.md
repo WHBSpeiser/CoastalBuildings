@@ -78,10 +78,13 @@ Finally, to download your data, run the third cell. As mentioned above, processi
 
 
 ## Roadmap
- -Compatiblity for drawn, non-rectangular polygon bounds
- -More sources!
- -More locations!
- -Merged data source outputs rasters
+Compatiblity for drawn, non-rectangular polygon bounds
+
+More sources!
+
+More locations!
+
+Merged data source outputs rasters
  
  ## Support
 
@@ -90,7 +93,8 @@ Email: Whspeiser@ucdavis.edu
 
 ## Acknowledgements and Contributors:
 
-Dan Buscombe, Evan Goldstein
+Evan Goldstein: https://github.com/ebgoldstein
+Dan Buscombe: https://github.com/dbuscombe-usgs
 
 
 ## Sources
