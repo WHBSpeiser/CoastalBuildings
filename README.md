@@ -7,7 +7,7 @@ CoastalBuildingsFinder is a Jupyter Notebook to aide in the collection of buildi
 
 
 
-### How CoastalBuildingsFinder works:
+### How CoastalBuildingsFinder Works:
 The coordinates of a drawn bounding box are extracted and converted into a GeoDataFrame. This GeoDataFrame is used to clip a polyline of the United States Coast, pulled from the UC Berkeley Spatial Library. This clipped polyline is buffered by 10 km. Then, the code ingests the building footprint data from your chosen state of interest. This is done in different ways depending on a chosen datasource. If you chose the Open Street Maps data, for example, the code uses the **osmnx** toolbox to call data from the drawn bounding box; if you choose the MS Footprints building data source, the code pulls the GeoJSON information from  Microsoft's online repository for entire chosen state. After this data is ingested, it is clipped to the coastal polyline 10km buffer, converted to your file choice preference and then downloaded to your chosen directory. 
 
 
