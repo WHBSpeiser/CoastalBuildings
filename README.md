@@ -84,8 +84,9 @@ More sources!
 
 More locations!
 
-Merged data source outputs rasters
- 
+Merged data source outputs
+
+
  ## Support
 
 Email: Whspeiser@ucdavis.edu
