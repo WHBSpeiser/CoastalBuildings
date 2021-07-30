@@ -63,6 +63,7 @@ Finally, to download your data, run the third cell. As mentioned above, processi
     coast=gpd.read_file('https://geodata.lib.berkeley.edu/download/file/stanford-xv279yj9196-geojson.json')
 
 
+This cell is where most of the code/processing occurs. First, the coordinates of the drawn, **Cell 2** ipyleaflet bounding box are extracted and converted into a GeoDataFrame. This GeoDataFrame is used to clip a polyline of the United States Coast that is pulled from the UC Berkeley Spatial Library. The clipped polyline is buffered by 10 km. Then, the code ingests the building footprint data from your state of interest. This is done in different ways depending on the chosen datasource. If you chose the Open Street Maps data, for example, the code uses the **osmnx** toolbox to call data from your **Cell 2** ipyleaflet bounding box. If you choose the MS Footprints building data source, the code pulls the GeoJSON information from your entire chosen state of interest from Microsoft's online repository. After this data is ingested, it is clipped to the coastal polyline 10km buffer and then downloaded to your chosen directory.
 
 ## Data Sources
 
