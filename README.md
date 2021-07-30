@@ -2,11 +2,12 @@
 
 ## Description:
 
+### General
 CoastalBuildingsFinder is a Jupyter Notebook to aide in the collection of building footprint data for the Eastern United States Coast (more locations to come). The goals of this Notebook are to keep track of various sources of building footprint data, provide an easy interface for extracting that data within 10km of the coast and specified, drawn bounds, and to download such data in a prefereable file format (i.e. GeoJSON, Shapefile, or TIF). The rasterization process is modified from the Mehdi Heris RasterizeBuildingFootprints toolbox: [https://github.com/mehdiheris/RasterizingBuildingFootprints] 
 
 
 
-## How CoastalBuildingsFinder works:
+### How CoastalBuildingsFinder works:
 The coordinates of a drawn bounding box are extracted and converted into a GeoDataFrame. This GeoDataFrame is used to clip a polyline of the United States Coast, pulled from the UC Berkeley Spatial Library. This clipped polyline is buffered by 10 km. Then, the code ingests the building footprint data from your chosen state of interest. This is done in different ways depending on a chosen datasource. If you chose the Open Street Maps data, for example, the code uses the **osmnx** toolbox to call data from the drawn bounding box; if you choose the MS Footprints building data source, the code pulls the GeoJSON information from  Microsoft's online repository for entire chosen state. After this data is ingested, it is clipped to the coastal polyline 10km buffer, converted to your file choice preference and then downloaded to your chosen directory. 
 
 
