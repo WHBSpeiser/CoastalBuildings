@@ -61,7 +61,7 @@ After going through the above options, run the second cell. This cell will bring
   <img src="https://github.com/WHBSpeiser/CoastalBuildings/blob/main/ExampleImages/Cell2Example.gif" width="700" />
 </p>
 
-(coming soon, polygon drawing compatability)
+
 
 After you draw your bounds, simply progress to the next cell.
 
@@ -75,6 +75,22 @@ Finally, to download your data, run the third cell. As mentioned above, processi
 
 
 
+
+
+## Roadmap
+ -Compatiblity for drawn, non-rectangular polygon bounds
+ -More sources!
+ -More locations!
+ -Merged data source outputs rasters
+ 
+ ## Support
+
+Email: Whspeiser@ucdavis.edu
+
+
+## Acknowledgements and Contributors:
+
+Dan Buscombe, Evan Goldstein
 
 
 ## Sources
