@@ -102,6 +102,7 @@ Email: Whspeiser@ucdavis.edu
 ## Acknowledgements and Contributors:
 
 Evan Goldstein: https://github.com/ebgoldstein
+
 Dan Buscombe: https://github.com/dbuscombe-usgs
 
 
