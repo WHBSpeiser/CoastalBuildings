@@ -38,6 +38,7 @@ In order to run the Notebook, multiple Python packages are required. In order to
 #### rasterio: https://rasterio.readthedocs.io/en/latest/
 #### fiona: https://pypi.org/project/Fiona/
 #### osmnx: https://osmnx.readthedocs.io/en/stable/, https://github.com/gboeing/osmnx
+#### pyshp: https://pypi.org/project/pyshp/
 
 ## Usage:
 ### Cell 1: Setting downloads directory
