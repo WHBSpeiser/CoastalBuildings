@@ -3,7 +3,7 @@
 ## Description:
 
 ### General
-CoastalBuildingsFinder is a Jupyter Notebook to aide in the collection of building footprint data for the Eastern United States Coast (more locations to come). The goals of this Notebook are to keep track of various sources of building footprint data, provide an easy interface for extracting that data within 10km of the coast in desired bounds, and to download the data in a prefereable file format (i.e. GeoJSON, Shapefile, or TIF). The rasterization process is modified from the Mehdi Heris RasterizeBuildingFootprints toolbox: [https://github.com/mehdiheris/RasterizingBuildingFootprints] 
+CoastalBuildingsFinder is a Jupyter Notebook to aide in the collection of building footprint data for the Eastern United States Coast (more locations to come). The goals of this Notebook are to keep track of various building footprint data sources, provide an easy interface for extracting that data within 10km of the coast in desired bounds, and to download the data in a prefereable file format (i.e. GeoJSON, Shapefile, or TIF). The rasterization process is modified from the Mehdi Heris RasterizeBuildingFootprints toolbox: [https://github.com/mehdiheris/RasterizingBuildingFootprints] 
 
 
 
@@ -15,10 +15,10 @@ CoastalBuildingsFinder is a Jupyter Notebook to aide in the collection of buildi
 
 
 ### How CoastalBuildingsFinder Works:
-The coordinates of a drawn bounding box are extracted and converted into a GeoDataFrame. This GeoDataFrame is used to clip a polyline of the United States Coast, pulled from the UC Berkeley Spatial Library. This clipped polyline is buffered by 10 km. Then, the code ingests the building footprint data from your chosen state of interest. This is done in different ways depending on a chosen datasource. If you chose the Open Street Maps data, for example, the code uses the **osmnx** toolbox to call data from the drawn bounding box; if you choose the MS Footprints building data source, the code pulls the GeoJSON information from  Microsoft's online repository for entire chosen state. After this data is ingested, it is clipped to the coastal polyline 10km buffer, converted to your file choice preference and then downloaded to your chosen directory. 
+The coordinates of a drawn bounding box are extracted and converted into a GeoDataFrame. This GeoDataFrame is used to clip a polyline of the United States Coast, pulled from the UC Berkeley Spatial Library. The clipped polyline is buffered by 10 km. Then, the code ingests the building footprint data from your chosen source and state of interest. This is done in different ways depending on the chosen datasource. If you chose the Open Street Maps data, for example, the code uses the **osmnx** toolbox to call data from the drawn bounding box; if you choose the MS Footprints building data source, the code pulls the GeoJSON information from  Microsoft's online repository for entire chosen state. After this data is ingested, it is clipped to the coastal polyline 10km buffer, converted to your file choice preference, and downloaded to your chosen directory. 
 
 
-If you prefer raster information, the code converts your bounding box into a raster with blank values and pixel xy dimensions set to an input resolution with  the projection EPSG:4326. The geometric statistics of your clipped building footprint data are then calculated for each intersecting pixel point. For more information on the calculated statistics check, Heris et al., 2020.
+If you prefer raster data, the code converts your bounding box into a raster with blank values and pixel xy dimensions set to an input resolution with the projection EPSG:4326. The geometric statistics of your clipped building footprint data are then calculated for each intersecting pixel point. For more information on the calculated statistics check, Heris et al., 2020.
 
 
 
